@@ -1,10 +1,10 @@
 
 
-def BSGS(g,h,r):
-  p = r+1
+def BSGS(g,h,N):
+  p = N+1
   g = Mod(g,p)
   h = Mod(h,p)
-  m = floor(sqrt(r))+1
+  m = floor(sqrt(N))+1
   L = dict()
   x = Mod(1,p)
   for i in range(m):
@@ -14,12 +14,13 @@ def BSGS(g,h,r):
   y = h
   for j in range(m+2):
     if L.has_key(y):
+      i = L[y]
       break
     y = y*u
   if j== m+1:
-    print("fail")
+    print("fail g was not a generator!")
     return
-  print(i+m*j)
+  print(i,m,j)
 
 
 

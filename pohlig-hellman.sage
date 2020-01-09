@@ -11,60 +11,41 @@ def BSGS(g,h,r,p):
   y = Mod(h,p)
   for j in range(m+2):
     if L.has_key(y):
+      i = L[y]
       break
     y = y*u
   if j== m+1:
     print("fail") # happens sometimes if g is not a generator of Z/pZ
     return -1
   return i+m*j
-
-def pohlig_hellman2(N,g,h):
-  p=N+1
-  factors = factor(N)
-  reminders = []
-  for (f,m) in factors: # loop on factors
-    a = 0
-    for j in range(1,m+1): # loop on factor multiplicity
-      e = N/f^j
-      g_ = Mod(g,p)
-      h_ = Mod(h,p)
-      g_ = g_^e
-      h_ = h_^e
-      u = Mod(g_^(-a),p)
-      h_ = h_*u
-      if h_ != 1:
-        e = N/f
-        g_ = Mod(g,p)
-        g_ = g_^e
-        b = 1
-        BSGS(g_,h_,f^j,p)
-        a = a+b*f^(j-1)
-    reminders.append(a)
-  CRT(reminders,factors)
-
-def pohlig_hellman(N,g,h):
-  p=N+1
-  factors = factor(N)
-  reminders = []
-  for (f,m) in factors: # loop on factors
-    a = 0
-    for j in range(1,m+1): # loop on factor multiplicity
-      e = N/f^j
-      g_ = Mod(g,p)
-      h_ = Mod(h,p)
-      g_ = g_^e
-      h_ = h_^e
-      u = Mod(g_^(-a),p)
-      h_ = h_*u
-      if h_ != 1:
-        e = N/f
-        g_ = Mod(g,p)
-        g_ = g_^e
+def exhaustive_search(g_,h_):
         b = 1
         T = g_
         while h_ != T: #exhaustive search (to be improved)
           b = b+1
           T = T*g_
+        return b
+
+
+def pohlig_hellman(N,g,h):
+  p=N+1
+  g = Mod(g,p)
+  h = Mod(h,p)
+  factors = factor(N)
+  reminders = []
+  for (f,m) in factors: # loop on factors
+    a = 0 #used to store the reminder
+    for j in range(1,m+1): # loop on factor multiplicity
+      e = N/f^j
+      g_ = g^e
+      h_ = h^e
+      u = g_^(-a)
+      h_ = h_*u
+      if h_ != 1:
+        e = N/f
+        g_ = g^e
+        #b = exhaustive_search(g_,h_)
+        b = BSGS(g_,h_,f^j,p)
         a = a+b*f^(j-1)
     reminders.append(a)
   CRT(reminders,factors)
@@ -95,4 +76,8 @@ def CRT(reminders,factors):
 p = 13827821670227353601
 g = 3
 h = 10780909174164501009
-time pohlig_hellman2(p-1,g,h)
+
+#g = 2
+#h = 8 
+#p = 11*17
+time pohlig_hellman(p-1,g,h)

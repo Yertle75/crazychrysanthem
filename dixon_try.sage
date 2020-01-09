@@ -7,7 +7,7 @@ def dixon(N,B):
     Z = vector(range(k+1))
     print("finding relations")
     for i in range(k+1):
-        z,z2_factors = draw_Bsmooth(B,N)
+        z,z2_factors = draw_Bsmooth(P,N)
         Z[i]=z
         (f,m) = z2_factors.pop()
         for j in reversed(range(k)):
@@ -29,22 +29,33 @@ def dixon(N,B):
         b = sqrt(a^2)
         d=gcd(a+b,N)
         if d != 1 and d != N:
-            print("a factor was found: "+str(d))
+            print d
             return
     print("failed, no factor was found")
 
-def draw_Bsmooth(B,N):
+def check_prime(n,P):
+  for p in P:
+     while n%p == 0:
+       n = n/p
+       if n == 1:
+         return True
+  return False
+
+def draw_Bsmooth(P,N):
     while True:
         z = Mod(randint(floor(sqrt(N))+1,N-1),N) #pick a square
-        #dev note: replace this with proper basis search
-        if z^2 == 1 or z^2 == 0:
+        s = int(z^2) 
+        if s == 1 or s == 0 or not(check_prime(s,P)):
             continue
-        z2_factors = list(factor(int(z^2)))
-        if z2_factors[-1][0]<= B : # then z2 is B-smooth
-           return z,z2_factors
+        # since we know the factors are small calling the function factor
+        # is not such a big "arnaque".
+        # I just use this trick to keep the code as short and readable
+        # as possible
+        z2_factors = list(factor(s))
+        return z,z2_factors
 
-N = 17*19
-N = 65537*131101
-N = 33554467*67108879
+N =8591966237
+#N = 2251802665812493
 #N = 73786976659910426999
-dixon(N,floor(exp(sqrt(log(N)*log(log(N))))))
+
+time dixon(N,100)
