@@ -17,11 +17,16 @@
 
 
 import numpy as np
-
+import time
 def pplusone(N,B):
-    X = np.prod([p^floor(log(B)/log(p)) for p in primes(1,B)])
+    B_ = 40000000000
+    X = reduce(lambda x,y : x*y, [p^(floor(log(B_)/log(p))+1) for p in primes(1,B)])
+    print X
     factor = 1
+    i=0
     while(factor == 1):
+      i+=1
+      print i
       a = Mod(randint(1,N-1),N)
       b = Mod(randint(1,N-1),N)
       d = (a^2-1)/b^2
@@ -30,4 +35,9 @@ def pplusone(N,B):
       factor = gcd(u-1,v)
     print(factor)
 
-time pplusone(95853544864250299111409,2101)
+
+N,B = 17*13,100
+N,B = 8591966237, 100
+N,B = 95853544864250299111409,2100
+N,B = 746482824012238308661619491135773503333385064366762059957618554835738449567418578817253229,1000
+time pplusone(N,B)

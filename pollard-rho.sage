@@ -1,6 +1,6 @@
 import numpy as np
 
-def f_default(x):
+def default_f(x):
   return x^2+1
 
 ###############
@@ -11,7 +11,7 @@ def f_default(x):
 
 # Vanilla pollard-rho with Floyd cycle finding 
 
-def pollard_rho(N,f=f_default,batch_size=1):
+def pollard_rho(N,f=default_f,batch_size=1):
   factor = 1
   x = mod(0,N)
   y = mod(f(x),N)
@@ -24,20 +24,21 @@ def pollard_rho(N,f=f_default,batch_size=1):
     b += 1
     if b == batch_size:   #compute batch-gcd
       factor = gcd(batch,N)
+      batch = mod(1,N)
       b = 0
   print factor
 
 # Pollard-rho with Brend cycle finding    
-def pollard_rho2(N,f=f_default,batch_size=1):
+def pollard_rho2(N,f=default_f,batch_size=1):
   factor = 1
   x = mod(0,N)
   y = mod(f(x),N)
-  j = 1
+  k = 1 # to iterate on cycles of size 2^k
   b = 0
   while (factor==1) :
     x = y
     batch = mod(1,N)
-    for i in range(2^j):
+    for i in range(2^k):
       y = f(y)
       batch *= (x-y)
       b += 1
@@ -46,12 +47,16 @@ def pollard_rho2(N,f=f_default,batch_size=1):
         b = 0
         if factor!=1 :
           break
-    j += 1
+    k += 1
   print factor
 
+# woudn't advise you to run the algo on them (1+min ...and above )
 N1 = 60331193824455101058028269521753
 N2 = 276474933387964773460419532857385928669681
+# answers in less than 1min
 N3 = 3827821670227353601
-time pollard_rho2(N2,batch_size=1000)
+dumb_N = 11*17
 
+time pollard_rho2(dumb_N,batch_size=1)
+time pollard_rho2(dumb_N,batch_size=1)
 
