@@ -69,12 +69,8 @@ def CRT(reminders,factors):
   a = a%n
   return a
 
-#p = 13827821670227353601
-#g = 3
-#h = 10780909174164501009
-
+p = 13827821670227353601
 g = 3
-h = 81
-p = 11*17
+h = 10780909174164501009
 
 time pohlig_hellman(p-1,g,h)
